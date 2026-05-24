@@ -32,12 +32,19 @@ public class LivreView extends JPanel {
 	public LivreView() {
 		setLayout(new BorderLayout());
 		
-		String[] columns = {"ID", "Titre", "Auteur", "ISBN", "Catégorie", "Disponible"};
+		String[] columns = {"ID", "Titre", "Auteur", "ISBN", "Catégorie", "Disponible", "Date d'ajout"};
 		tableModel = new DefaultTableModel(columns, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false;
+				return false; //toutes les cellules sont non editables
 			}
+			@Override
+		    public Class<?> getColumnClass(int columnIndex) {
+		        if (columnIndex == 0) {
+		            return Integer.class; 
+		        }
+		        return String.class;
+		    }
 		};
 		tableLivres = new JTable(tableModel);
 		tableLivres.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -81,8 +88,6 @@ public class LivreView extends JPanel {
 		add(inputsPanel,BorderLayout.NORTH);
 		add(buttonsPanel,BorderLayout.SOUTH);
 		
-		//charger les livres
-		chargerLivres();
 		
 		//Ecouteur pour la selection dans la table
 		tableLivres.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -121,6 +126,11 @@ public class LivreView extends JPanel {
 	}
 		
 	//Methodes
+	//Méthode pour charger la vue
+	public void chargerVue() {
+		chargerLivres();
+	}
+	
 	//Méthode qui permet de charger tous les livres
 	private void chargerLivres() {
 		tableModel.setRowCount(0); //vide le tableau
@@ -133,7 +143,8 @@ public class LivreView extends JPanel {
 					livre.getAuteur(),
 					livre.getIsbn(),
 					livre.getCategorie(),
-					livre.isDisponible() ? "Oui" : "Non" 
+					livre.isDisponible() ? "Oui" : "Non",
+					livre.getDateAjout()
 				};
 				tableModel.addRow(row);
 			}
@@ -150,12 +161,12 @@ public class LivreView extends JPanel {
         txtCategorie.setText("");
 	}
 	
-	//Méthode qui permet de ???
+	//Méthode qui permet de remplir un livre
 	private void fillFieldsFromSelectedRows() {
 		int selectedRow = tableLivres.getSelectedRow();
 		try {
 			if (selectedRow != -1) {
-				int id = (int) tableLivres.getValueAt(selectedRow, 1);
+				int id = (int) tableLivres.getValueAt(selectedRow, 0);
 				Livre livre = Dao.getLivreById(id);
 				if (livre != null) {
 					txtTitre.setText(livre.getTitre());
@@ -165,7 +176,7 @@ public class LivreView extends JPanel {
 				}
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Erreur lors de ??? : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur lors du remplissage d'un livre : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	

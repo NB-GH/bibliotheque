@@ -15,7 +15,7 @@ public class Main {
 						"Erreur lors du démarrage : " + e.getMessage(),
 						"Erreur", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();  
-			};
+			}
 		});
 
 	}

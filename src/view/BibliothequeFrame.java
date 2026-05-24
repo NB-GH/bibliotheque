@@ -27,5 +27,11 @@ public class BibliothequeFrame extends JFrame {
         tabbedPane.addTab("Emprunts", empruntPanel);
 
         add(tabbedPane, BorderLayout.CENTER);
-	}
+        
+        if (!java.beans.Beans.isDesignTime()) {
+            livrePanel.chargerVue();
+            adherentPanel.chargerVue();
+            empruntPanel.chargerVue();
+        }
+    }
 }

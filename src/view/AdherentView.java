@@ -42,6 +42,13 @@ public class AdherentView extends JPanel {
 			public boolean isCellEditable(int row, int column) {
 				return false; //toutes les cellules sont non editables
 			}
+			@Override
+		    public Class<?> getColumnClass(int columnIndex) {
+		        if (columnIndex == 0) {
+		            return Integer.class; 
+		        }
+		        return String.class;
+		    }
 		};
 		tableAdherents = new JTable(tableModel);
 		tableAdherents.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
@@ -83,9 +90,7 @@ public class AdherentView extends JPanel {
 		
 		add(inputsPanel, BorderLayout.NORTH);
 		add(buttonsPanel, BorderLayout.SOUTH);
-		
-		//charger les livres
-		chargerAdherents();
+
 		
 		//Ecouteur pour la selection dans la table
 		tableAdherents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -124,6 +129,11 @@ public class AdherentView extends JPanel {
 	}
 		
 	//Methodes
+	//Méthode pour charger la vue
+	public void chargerVue() {
+		chargerAdherents();
+	}
+	
 	//Méthode qui permet de charger tous les adherents
 	private void chargerAdherents() {
 		tableModel.setRowCount(0);//vide le tableau
@@ -155,12 +165,12 @@ public class AdherentView extends JPanel {
         txtAdresse.setText("");
 	}
 	
-	//Méthode qui permet de ???
+	//Méthode qui permet de remplir un adhérent
 	private void fillFieldsFromSelectedRows() {
 		int selectedRow = tableAdherents.getSelectedRow();
 		try {
 			if (selectedRow != -1) {
-					int id = (int) tableAdherents.getValueAt(selectedRow, 1);
+					int id = (int) tableAdherents.getValueAt(selectedRow, 0);
 					Adherent adherent = Dao.getAdherentById(id);
 					if (adherent != null) {
 						txtNom.setText(adherent.getNom());
@@ -171,7 +181,7 @@ public class AdherentView extends JPanel {
 					}
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Erreur lors ??? : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur lors du remplissage d'un adhérent : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -194,7 +204,7 @@ public class AdherentView extends JPanel {
 			chargerAdherents();
 			viderChamps();
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Erreur lors du chargement des livres : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout d'un adhérent : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -210,12 +220,12 @@ public class AdherentView extends JPanel {
 			int id = (int) tableAdherents.getValueAt(selectedRow, 0);
 			int confirm = JOptionPane.showConfirmDialog(this, "Voulez-vous vraiment supprimer cet adhérent ?", "Confirmation", JOptionPane.YES_NO_OPTION);
 			if (confirm == JOptionPane.YES_OPTION) {
-	            Dao.deleteLivre(id);
+            Dao.deleteAdherent(id);
 	            chargerAdherents();
 	            viderChamps();
 	        }
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Erreur lors du chargement des livres : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur lors du la suppression d'un adhérent : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -241,11 +251,12 @@ public class AdherentView extends JPanel {
 		}
 		
 		try {
-			Adherent adherent = new Adherent(id, nom, prenom, email, telephone, adresse, LocalDate.now());
+			LocalDate dateInscription = Dao.getAdherentById(id).getDateInscription();
+			Adherent adherent = new Adherent(id, nom, prenom, email, telephone, adresse, dateInscription);
 			Dao.updateAdherent(adherent);
 			chargerAdherents();
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Erreur lors du chargement des livres : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur lors de la modification d'un adhérent : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

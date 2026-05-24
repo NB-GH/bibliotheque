@@ -17,8 +17,6 @@ import model.Livre;
 import java.util.List;
 
 import java.awt.*;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
@@ -38,31 +36,51 @@ public class EmpruntView extends JPanel {
 		setLayout(new BorderLayout());
 		
 		// Tableau des emprunts
-        String[] columns = {"ID", "Livre", "Adhérent", "Date d'emprunt", "Date de retour prévue", "Date de retour réelle"};
+        String[] columns = {"ID", "Livre", "Adhérent", "Date d'emprunt", "Date de retour prévue"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Toutes les cellules sont non éditables
             }
+            @Override
+		    public Class<?> getColumnClass(int columnIndex) {
+		        if (columnIndex == 0) {
+		            return Integer.class; 
+		        }
+		        return String.class;
+		    }
         };
         
 		tableEmprunts = new JTable(tableModel);
-		//tableEmprunts.setSelectionModel(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(tableEmprunts);
 		add(scrollPane, BorderLayout.CENTER);
 		
 		//Panel des champs de saisie
-		JPanel inputsPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+		JPanel inputsPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 		
-		inputsPanel.add(new JLabel("Livre : "));
+		c.gridx = 0;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.WEST;
+		inputsPanel.add(new JLabel("Livre : "), c);
+		
+		c.gridx = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
 		comboLivres = new JComboBox<>();
-		chargerComboLivres();
-		inputsPanel.add(comboLivres);
+		inputsPanel.add(comboLivres, c);
 		
-		inputsPanel.add(new JLabel("Adhérent : "));
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
+		inputsPanel.add(new JLabel("Adhérent : "), c);
+		
+		c.gridx = 1;
+		c.weightx = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		comboAdherents = new JComboBox<>();
-		chargerComboAdherents();
-		inputsPanel.add(comboAdherents);
+		inputsPanel.add(comboAdherents, c);
 		
 		//Panel des boutons
 		JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -74,9 +92,6 @@ public class EmpruntView extends JPanel {
 		
 		add(inputsPanel, BorderLayout.NORTH);
 		add(buttonsPanel, BorderLayout.SOUTH);
-		
-		//Charger les emprunts
-		chargerEmprunts();
 		
 		//Ecouteurs pour les boutons
 		//Ecouteur pour le bouton permettant d'emprunter un livre
@@ -97,11 +112,19 @@ public class EmpruntView extends JPanel {
 	}
 
 	//Méthodes
+	//Méthode pour charger la vue
+	public void chargerVue() {
+		chargerComboAdherents();
+		chargerComboLivres();
+		chargerEmprunts();
+	}
+	
 	//Méthode pour charger les livres
 	private void chargerComboLivres() {
 		comboLivres.removeAllItems();
 		try {
 			List<Livre> livres = Dao.getAllLivres();
+			comboLivres.addItem(null);
 			for (Livre livre : livres) {
 				if (livre.isDisponible()) {
 					comboLivres.addItem(livre);
@@ -117,6 +140,7 @@ public class EmpruntView extends JPanel {
 		comboAdherents.removeAllItems();
 		try {
 			List<Adherent> adherents = Dao.getAllAdherents();
+			comboAdherents.addItem(null);
 			for (Adherent adherent : adherents) {
 				comboAdherents.addItem(adherent);
 			}
@@ -137,7 +161,6 @@ public class EmpruntView extends JPanel {
 		            emprunt.getAdherent().getNom() + " " + emprunt.getAdherent().getPrenom(),
 		            emprunt.getDateEmprunt(),
 		            emprunt.getDateRetourPrevue()
-		            // emprunt.getDateRetourReelle() : null
 		        };
 		        tableModel.addRow(row);
 		    }
@@ -173,11 +196,11 @@ public class EmpruntView extends JPanel {
 		}
 		try {
 			int id = (int) tableEmprunts.getValueAt(selectedRow, 0);
-			Dao.returnLivre(id);
+			Dao.returnEmprunt(id);
 			chargerEmprunts();
 			chargerComboLivres();
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Erreur lors du chargement des adhérents : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur lors du retour d'un livre : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

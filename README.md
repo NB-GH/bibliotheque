@@ -16,7 +16,7 @@ Il s'agit d'une application pour une bibliothèque qui permet de gérer complèt
 
 # Modalités d’accès aux productions et à leur documentation
 
-La documentation du projet, JavaDoc, est disponible et téléchargeable [depuis ce dossier](./doc/index.html)
+La documentation du projet, JavaDoc, est disponible et téléchargeable [depuis ce dossier](./doc) et ensuite consultable depuis le fichier **index.html**
 et le cahier des charges fourni par le prestataire [à partir d'ici](Cahier%20des%20Charges.pdf) 
 
 # Descriptif de la réalisation professionnelle

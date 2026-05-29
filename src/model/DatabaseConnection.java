@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Gère la connexion à la base de données MySQL
+ */
 public class DatabaseConnection {
 	private static final String URL = "jdbc:mysql://localhost/bibliotheque";
 	private static final String USER = "root";
@@ -11,6 +14,11 @@ public class DatabaseConnection {
 	
 	private static Connection connection = null;
 	
+	/**
+	 * Retourne une connexion active à la base de données
+	 * @return connexion à la base de données
+	 * @throws SQLException erreur lors de la connexion
+	 */
 	public static Connection getConnection() throws SQLException {
 		if (connection == null || connection.isClosed()) {
 			try {
@@ -23,6 +31,10 @@ public class DatabaseConnection {
 		return connection;
 	};
 	
+	/**
+	 * Ferme la connexion à la base de données
+	 * @throws SQLException erreur lors de la fermeture
+	 */
 	public static void closeConnection() throws SQLException {
 		if (connection != null && !connection.isClosed()) {
 			connection.close();

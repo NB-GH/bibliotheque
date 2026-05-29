@@ -2,13 +2,13 @@ package view;
 
 import model.Dao;
 import model.Livre;
+import resources.Style;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.time.LocalDate;
 
 import java.util.List;
@@ -18,7 +18,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-
+/**
+ * Onglet des livres 
+ * Permet d'afficher, ajouter, supprimer et modifier les livres 
+ * de la bibliothèque avec un tableau et des champs de texte  
+ */
 public class LivreView extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
@@ -28,7 +32,13 @@ public class LivreView extends JPanel {
 	private JTextField txtTitre, txtAuteur, txtIsbn, txtCategorie;
 	private JCheckBox chkDisponible;
 	private JButton btnAjouter, btnSupprimer, btnModifier;
+	private EmpruntView empruntView;
 	
+	/**
+	 * Constructeur de l'onglet des livres
+	 * Initialise l'onglet avec un tableau scrollable, 
+	 * une zone de champs de saisie et une zone de boutons 
+	 */
 	public LivreView() {
 		setLayout(new BorderLayout());
 		
@@ -99,6 +109,19 @@ public class LivreView extends JPanel {
 			}
 		});
 		
+		//Gestion du style 
+		Style.stylePanel(inputsPanel);
+		Style.stylePanel(buttonsPanel);
+		Style.styleTable(tableLivres);
+		Style.styleTextField(txtTitre);
+		Style.styleTextField(txtAuteur);
+		Style.styleTextField(txtIsbn);
+		Style.styleCheckBox(chkDisponible);
+		Style.styleTextField(txtCategorie);
+		Style.styleSuccessButton(btnAjouter);
+		Style.stylePrimaryButton(btnModifier);
+		Style.styleDangerButton(btnSupprimer);
+		
 		//Ecouteurs pour les boutons
 		//Ecouteur pour le bouton permettant d'ajouter un livre
 		btnAjouter.addActionListener(new ActionListener() {
@@ -125,13 +148,20 @@ public class LivreView extends JPanel {
 		});
 	}
 		
+	//setter sur empruntView
+	public void setEmpruntView(EmpruntView empruntView) { this.empruntView = empruntView; }
+	
 	//Methodes
-	//Méthode pour charger la vue
+	/**
+	 * Charge les données des livres dans le tableau
+	 */
 	public void chargerVue() {
 		chargerLivres();
 	}
 	
-	//Méthode qui permet de charger tous les livres
+	/**
+	 * Charge tous les livres et les affiche dans le tableau
+	 */
 	private void chargerLivres() {
 		tableModel.setRowCount(0); //vide le tableau
 		try {
@@ -153,7 +183,9 @@ public class LivreView extends JPanel {
 		}
 	}
 	
-	//Méthode qui permet de vider tous les champs
+	/**
+	 * Vide tous les champs de texte
+	 */
 	private void viderChamps() {
 		txtTitre.setText("");
         txtAuteur.setText("");
@@ -161,7 +193,9 @@ public class LivreView extends JPanel {
         txtCategorie.setText("");
 	}
 	
-	//Méthode qui permet de remplir un livre
+	/**
+	 * Remplit les champs avec les données d'un livre
+	 */
 	private void fillFieldsFromSelectedRows() {
 		int selectedRow = tableLivres.getSelectedRow();
 		try {
@@ -173,6 +207,7 @@ public class LivreView extends JPanel {
 					txtAuteur.setText(livre.getAuteur());
 					txtIsbn.setText(livre.getIsbn());
 					txtCategorie.setText(livre.getCategorie());
+					chkDisponible.setSelected(livre.isDisponible());
 				}
 			}
 		} catch (Exception e) {
@@ -180,11 +215,14 @@ public class LivreView extends JPanel {
 		}
 	}
 	
-	//Méthode qui permet d'ajouter un livre
+	/**
+	 * Ajoute un livre avec les données saisies dans les champs de texte
+	 */
 	private void ajouterLivre() {
 		String titre = txtTitre.getText();
 		String auteur = txtAuteur.getText();
 		String isbn = txtIsbn.getText();
+		boolean disponible = chkDisponible.isSelected();
 		String categorie = txtCategorie.getText();
 		
 		if (titre.isEmpty() || auteur.isEmpty()) {
@@ -192,16 +230,19 @@ public class LivreView extends JPanel {
 			return;
 		}
 		try {
-			Livre livre = new Livre(0, titre, auteur, isbn, true, categorie, LocalDate.now());
+			Livre livre = new Livre(0, titre, auteur, isbn, disponible, categorie, LocalDate.now());
 			Dao.addLivre(livre);
 			chargerLivres();
+			empruntView.chargerComboLivres();
 			viderChamps();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout d'un livre : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
-	//Méthode qui permet de supprimer un livre 
+	/**
+	 * Supprime le livre sélectionné dans le tableau
+	 */
 	private void supprimerLivre() {
 		int selectedRow = tableLivres.getSelectedRow();
 		if(selectedRow == -1) {
@@ -214,6 +255,8 @@ public class LivreView extends JPanel {
 			if (confirm == JOptionPane.YES_OPTION) {
 	            Dao.deleteLivre(id);
 	            chargerLivres();
+	            empruntView.chargerComboLivres();
+	            empruntView.chargerEmprunts();
 	            viderChamps();
 	        }
 		} catch (Exception e) {
@@ -221,7 +264,9 @@ public class LivreView extends JPanel {
 		}
 	}
 	
-	//Méthode qui permet de modifier un livre
+	/**
+	 * Modifie un livre par les données saisies dans les champs de texte
+	 */
 	private void modifierLivre() {
 		int selectedRow = tableLivres.getSelectedRow();
 		if(selectedRow == -1) {
@@ -233,15 +278,24 @@ public class LivreView extends JPanel {
 			String titre = txtTitre.getText();
 			String auteur = txtAuteur.getText();
 			String isbn = txtIsbn.getText();
+			boolean disponible = chkDisponible.isSelected();
 			String categorie = txtCategorie.getText();
 			
 			if (titre.isEmpty() || auteur.isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Veuillez remplir au moins le titre et l'auteur.", "Erreur", JOptionPane.ERROR_MESSAGE);
 	            return;
 			}
-			Livre livre = new Livre(id, titre, auteur, isbn, true, categorie, LocalDate.now());
+			if ((Dao.getEmpruntIdByLivreTitre(titre) != null) && disponible) {
+				JOptionPane.showMessageDialog(this, "Ce livre est actuellement emprunté. \n Il ne peut être marqué comme disponible.", "Attention", JOptionPane.WARNING_MESSAGE);
+				disponible = false;
+			}
+			
+			Livre livre = new Livre(id, titre, auteur, isbn, disponible, categorie);
 			Dao.updateLivre(livre);
 			chargerLivres();
+			empruntView.chargerComboLivres();
+			empruntView.chargerEmprunts();
+			viderChamps();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Erreur lors de la modification d'un livre : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}

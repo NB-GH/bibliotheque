@@ -28,3 +28,4 @@ Une procédure stockée et des triggers permettent la journalisation des suppres
 
 ## JavaDoc
 La documentation du projet est disponible [à partir d'ici](./doc/index.html)
+Cahier des Charges [(ici)](Cahier%20des%20Charges.pdf) 

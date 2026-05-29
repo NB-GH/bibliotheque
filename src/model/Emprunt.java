@@ -2,8 +2,10 @@ package model;
 
 import java.time.LocalDate;
 
+/**
+ * Représente l'emprunt d'un livre par un adhérent de la bibliothèque
+ */
 public class Emprunt {
-
 	private int empruntId;
 	private Livre livre;
 	private Adherent adherent;
@@ -11,8 +13,15 @@ public class Emprunt {
 	private LocalDate dateRetourPrevue;
 	//private LocalDate dateRetourReelle;
 
-	//Constructeur
-	public Emprunt(int empruntId, Livre livre, Adherent adherent, LocalDate dateEmprunt, LocalDate dateRetourPrevue, LocalDate dateRetourReelle) {
+	/**
+	 * Constructeur complet pour créer un objet Emprunt
+	 * @param empruntId identifiant de l'emprunt
+	 * @param livre livre emprunté
+	 * @param adherent adhérent qui emprunte
+	 * @param dateEmprunt date de l'emprunt
+	 * @param dateRetourPrevue date de retour prévue de l'emprunt
+	 */
+	public Emprunt(int empruntId, Livre livre, Adherent adherent, LocalDate dateEmprunt, LocalDate dateRetourPrevue) {
 		this.empruntId = empruntId;
 		this.livre = livre;
 		this.adherent = adherent;
@@ -21,9 +30,15 @@ public class Emprunt {
 		//this.dateRetourReelle = dateRetourReelle;
 	}
 	
-	//Constructeur sans id (pour les nouveaux emprunts) 
+	/**
+	 * Constructeur sans identifiant pour ajouter un nouvel emprunt 
+	 * @param livre livre emprunté
+	 * @param adherent adhérent qui emprunte
+	 * @param dateEmprunt date de l'emprunt
+	 * @param dateRetourPrevue date de retour prévue de l'emprunt
+	 */
 	public Emprunt(Livre livre, Adherent adherent, LocalDate dateEmprunt, LocalDate dateRetourPrevue) {
-		this(0, livre, adherent, dateEmprunt, dateRetourPrevue, null);
+		this(0, livre, adherent, dateEmprunt, dateRetourPrevue);
 	}
 
 	//getters
@@ -42,6 +57,9 @@ public class Emprunt {
 	public void setDateRetourPrevue(LocalDate dateRetourPrevue) { this.dateRetourPrevue = dateRetourPrevue; }
 	//public void setDateRetourReelle(LocalDate dateRetourReelle) { this.dateRetourReelle = dateRetourReelle; }
 	
+	/**
+	 * Retourne une représentation textuelle de l'emprunt
+	 */
 	@Override
     public String toString() {
         return "Emprunt [ID : " + empruntId + ", Livre : " + livre.getTitre() + ", Adhérent : " + adherent.getNom() + " " + adherent.getPrenom() + ", Date d'emprunt : " + dateEmprunt + ", Date de retour prévue : " + dateRetourPrevue + "]";

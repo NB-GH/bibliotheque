@@ -2,8 +2,10 @@ package model;
 
 import java.time.LocalDate;
 
+/**
+ * Représente un adhérent de la bibliothèque
+ */
 public class Adherent {
-
 	private int adherentId;
 	private String nom;
 	private String prenom;
@@ -12,7 +14,16 @@ public class Adherent {
 	private String adresse;
 	private LocalDate dateInscription;
 	
-	//Constructeur
+	/**
+	 * Constructeur complet pour créer un objet Adhérent
+	 * @param adherentId identifiant de l'adhérent
+	 * @param nom nom de l'adhérent
+	 * @param prenom prénom de l'adhérent
+	 * @param email adresse mail de l'adhérent
+	 * @param telephone téléphone de l'adhérent
+	 * @param adresse adresse de l'adhérent
+	 * @param dateInscription date d'inscription de l'adhérent
+	 */
 	public Adherent(int adherentId, String nom, String prenom, String email, String telephone, String adresse, LocalDate dateInscription) {
 		this.adherentId = adherentId;
 		this.nom = nom;
@@ -23,6 +34,32 @@ public class Adherent {
 		this.dateInscription = dateInscription;	
 	}
 
+	/**
+	 * Constructeur sans identifiant pour ajouter un nouvel adhérent
+	 * @param nom nom de l'adhérent
+	 * @param prenom prénom de l'adhérent
+	 * @param email adresse mail de l'adhérent
+	 * @param telephone téléphone de l'adhérent
+	 * @param adresse adresse de l'adhérent
+	 * @param dateInscription date d'inscription de l'adhérent
+	 */
+	public Adherent(String nom, String prenom, String email, String telephone, String adresse, LocalDate dateInscription) {
+		this(0, nom, prenom, email, telephone, adresse, dateInscription);
+	}
+	
+	/**
+	 * Constructeur sans date d'inscription pour modifier un adhérent
+	 * @param adherentId identifiant de l'adhérent
+	 * @param nom nom de l'adhérent
+	 * @param prenom prénom de l'adhérent
+	 * @param email adresse mail de l'adhérent
+	 * @param telephone téléphone de l'adhérent
+	 * @param adresse adresse de l'adhérent
+	 */ 
+	public Adherent(int adherentId, String nom, String prenom, String email, String telephone, String adresse) {
+	    this(adherentId, nom, prenom, email, telephone, adresse, null);
+	} 
+	
 	//getters
 	public int getAdherentId() { return adherentId; }
 	public String getNom() { return nom; }
@@ -41,6 +78,9 @@ public class Adherent {
 	public void setAdresse(String adresse) { this.adresse = adresse; }
 	public void setDate_inscription(LocalDate dateInscription) { this.dateInscription = dateInscription; }
 	
+	/**
+	 * Retourne une représentation textuelle de l'adhérent
+	 */
 	@Override
 	public String toString() {
 		return "Adhérent [ID : "+ adherentId + ", Nom : " + nom + ", Prénom: " + prenom + ", Email: " + email + ", Téléphone: " + telephone + ", Adresse: " + adresse + ", Date d'inscription: " + dateInscription + "]";

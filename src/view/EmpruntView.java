@@ -13,6 +13,7 @@ import model.Adherent;
 import model.Dao;
 import model.Emprunt;
 import model.Livre;
+import resources.Style;
 
 import java.util.List;
 
@@ -21,7 +22,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
-
+/**
+ * Onglet des emprunts 
+ * Permet d'afficher, d'emprunter ou de retourner un livre
+ * de la bibliothèque avec un tableau et des listes déroulables
+ */
 public class EmpruntView extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
@@ -31,7 +36,13 @@ public class EmpruntView extends JPanel {
     private JComboBox<Livre> comboLivres;
     private JComboBox<Adherent> comboAdherents;
     private JButton btnEmprunter, btnRetourner;
+    private LivreView livreView;
     
+    /**
+	 * Constructeur de l'onglet des emprunts
+	 * Initialise l'onglet avec un tableau scrollable, 
+	 * une zone de listes déroulables et une zone de boutons 
+	 */
 	public EmpruntView() {
 		setLayout(new BorderLayout());
 		
@@ -55,32 +66,37 @@ public class EmpruntView extends JPanel {
 		JScrollPane scrollPane = new JScrollPane(tableEmprunts);
 		add(scrollPane, BorderLayout.CENTER);
 		
-		//Panel des champs de saisie
+		//Panel des listes déroulables
 		JPanel inputsPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		GridBagConstraints cLabelLivres = new GridBagConstraints();		
+		GridBagConstraints cComboLivres = new GridBagConstraints();		
+		GridBagConstraints cLabelAdherents = new GridBagConstraints();		
+		GridBagConstraints cComboAdherents = new GridBagConstraints();
 		
-		c.gridx = 0;
-		c.gridy = 0;
-		c.anchor = GridBagConstraints.WEST;
-		inputsPanel.add(new JLabel("Livre : "), c);
+		cLabelLivres.gridx = 0;
+		cLabelLivres.gridy = 0;
+		cLabelLivres.anchor = GridBagConstraints.WEST;
+		inputsPanel.add(new JLabel("Livre : "), cLabelLivres);
 		
-		c.gridx = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;
+		cComboLivres.gridx = 1;
+		cComboLivres.gridy = 0;
+		cComboLivres.fill = GridBagConstraints.HORIZONTAL;
+		cComboLivres.weightx = 1;
 		comboLivres = new JComboBox<>();
-		inputsPanel.add(comboLivres, c);
+		inputsPanel.add(comboLivres, cComboLivres);
 		
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weightx = 0;
-		c.fill = GridBagConstraints.NONE;
-		inputsPanel.add(new JLabel("Adhérent : "), c);
+		cLabelAdherents.gridx = 0;
+		cLabelAdherents.gridy = 1;
+		cLabelAdherents.weightx = 0;
+		cLabelAdherents.fill = GridBagConstraints.NONE;
+		inputsPanel.add(new JLabel("Adhérent : "), cLabelAdherents);
 		
-		c.gridx = 1;
-		c.weightx = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		cComboAdherents.gridx = 1;
+		cComboAdherents.gridy = 1;
+		cComboAdherents.weightx = 1;
+		cComboAdherents.fill = GridBagConstraints.HORIZONTAL;
 		comboAdherents = new JComboBox<>();
-		inputsPanel.add(comboAdherents, c);
+		inputsPanel.add(comboAdherents, cComboAdherents);
 		
 		//Panel des boutons
 		JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -92,6 +108,15 @@ public class EmpruntView extends JPanel {
 		
 		add(inputsPanel, BorderLayout.NORTH);
 		add(buttonsPanel, BorderLayout.SOUTH);
+		
+		//Gestion du style
+		Style.stylePanel(inputsPanel);
+		Style.stylePanel(buttonsPanel);
+		Style.styleTable(tableEmprunts);
+		Style.styleComboBox(comboLivres);
+		Style.styleComboBox(comboAdherents);
+		Style.styleSuccessButton(btnEmprunter);
+		Style.stylePrimaryButton(btnRetourner);
 		
 		//Ecouteurs pour les boutons
 		//Ecouteur pour le bouton permettant d'emprunter un livre
@@ -111,16 +136,23 @@ public class EmpruntView extends JPanel {
 		});
 	}
 
+	//setters sur les adherentView et livreView
+	public void setLivreView(LivreView livreView) { this.livreView = livreView; }
+
 	//Méthodes
-	//Méthode pour charger la vue
+	/**
+	 * Charge toutes les données des livres, des adhérents et des emprunts  dans le tableau
+	 */
 	public void chargerVue() {
-		chargerComboAdherents();
 		chargerComboLivres();
+		chargerComboAdherents();
 		chargerEmprunts();
 	}
 	
-	//Méthode pour charger les livres
-	private void chargerComboLivres() {
+	/**
+	 * Charge tous les livres et les affiche dans la liste déroulante
+	 */
+	public void chargerComboLivres() {
 		comboLivres.removeAllItems();
 		try {
 			List<Livre> livres = Dao.getAllLivres();
@@ -135,8 +167,10 @@ public class EmpruntView extends JPanel {
 		}
 	}
 	
-	//méthode pour charger les adhérents
-	private void chargerComboAdherents() {
+	/**
+	 * Charge tous les adhérents et les affiche dans la liste déroulante
+	 */	
+	public void chargerComboAdherents() {
 		comboAdherents.removeAllItems();
 		try {
 			List<Adherent> adherents = Dao.getAllAdherents();
@@ -149,8 +183,10 @@ public class EmpruntView extends JPanel {
 		}
 	}
 	
-	//méthode pour recharger tous les emprunts
-	private void chargerEmprunts() {
+	/**
+	 * Charge tous les emprunts et les affiche dans le tableau
+	 */
+	public void chargerEmprunts() {
 		tableModel.setRowCount(0); // Vider le tableau
 		try {
 		    List<Emprunt> emprunts = Dao.getAllEmprunts();
@@ -169,7 +205,9 @@ public class EmpruntView extends JPanel {
 		}
 	}
 	
-	//Méthode pour emprunter un livre
+	/**
+	 * Emprunte le livre sélectionné par l'adhérent sélectionné dans les listes déroulantes
+	 */ 
 	private void emprunterLivre() {
 		Livre livre = (Livre) comboLivres.getSelectedItem();
 		Adherent adherent = (Adherent) comboAdherents.getSelectedItem();
@@ -178,16 +216,20 @@ public class EmpruntView extends JPanel {
 			return;
 		}
 		try {
-			Emprunt emprunt = new Emprunt(livre, adherent, LocalDate.now(), LocalDate.now().plusDays(14));
+			Emprunt emprunt = new Emprunt(0, livre, adherent, LocalDate.now(), LocalDate.now().plusDays(14));
 			Dao.addEmprunt(emprunt);
 			chargerEmprunts();
 			chargerComboLivres();
+			chargerComboAdherents();
+			livreView.chargerVue();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Erreur lors de l'emprunt d'un livre : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
-	//Méthode pour retourner un livre 
+	/**
+	 * Retourne l'emprunt sélectionné dans le tableau
+	 */
 	private void retournerLivre() {
 		int selectedRow = tableEmprunts.getSelectedRow();
 		if (selectedRow == -1) {
@@ -199,6 +241,7 @@ public class EmpruntView extends JPanel {
 			Dao.returnEmprunt(id);
 			chargerEmprunts();
 			chargerComboLivres();
+			livreView.chargerVue();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Erreur lors du retour d'un livre : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}

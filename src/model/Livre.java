@@ -2,6 +2,9 @@ package model;
 
 import java.time.LocalDate;
 
+/**
+ * Représente un livre de la bibliothèque
+ */
 public class Livre {
 	private int livreId;
 	private String titre;
@@ -11,7 +14,16 @@ public class Livre {
 	private String categorie;
 	private LocalDate dateAjout;
 	
-	//Constructeur complet
+	/**
+	 * Constructeur complet pour créer un objet Livre
+	 * @param livreId identifiant du livre
+	 * @param titre titre du livre
+	 * @param auteur auteur du livre
+	 * @param isbn numéro ISBN du livre
+	 * @param disponible disponibilité du livre
+	 * @param categorie catégorie du livre
+	 * @param dateAjout date d'ajout du livre
+	 */
 	public Livre(int livreId, String titre, String auteur, String isbn, boolean disponible, String categorie, LocalDate dateAjout) {
 		this.livreId = livreId;
 		this.titre = titre;
@@ -22,9 +34,29 @@ public class Livre {
 		this.dateAjout = dateAjout;
 	}
 
-	//Constructeur sans Id (pour les nouveaux livres)
+	/**
+	 * Constructeur sans identifiant pour ajouter un livre
+	 * @param titre titre du livre
+	 * @param auteur auteur du livre
+	 * @param isbn numéro ISBN du livre
+	 * @param disponible disponibilité du livre
+	 * @param categorie catégorie du livre
+	 * @param dateAjout date d'ajout du livre
+	 */
 	public Livre (String titre, String auteur, String isbn, boolean disponible, String categorie, LocalDate dateAjout) {
 		this(0, titre, auteur, isbn, disponible, categorie, dateAjout);
+	}
+	
+	/**
+	 * Constructeur sans date d'ajout pour modifier un livre
+	 * @param livreId titre du livre
+	 * @param auteur auteur du livre
+	 * @param isbn numéro ISBN du livre
+	 * @param disponible disponibilité du livre
+	 * @param categorie catégorie du livre
+	 */
+	public Livre(int livreId, String titre, String auteur, String isbn, boolean disponible, String categorie) {
+	    this(livreId, titre, auteur, isbn, disponible, categorie, null);
 	}
 	
 	//getters
@@ -44,6 +76,9 @@ public class Livre {
 	public void setCategorie(String categorie) { this.categorie = categorie; }
 	public void setDateAjout(LocalDate dateAjout) {	this.dateAjout = dateAjout;	}
 
+	/**
+	 * Retourne une représentation textuelle du livre
+	 */
 	@Override
 	public String toString() {
 		return "Livre [ID : " + livreId + ", Titre : " + titre + ", Auteur : " + auteur + ", ISBN : " + isbn + ", Catégorie : " + categorie + ", Disponible : " + disponible + ", Date d'ajout: " + dateAjout + "]";

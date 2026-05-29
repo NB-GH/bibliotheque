@@ -23,16 +23,28 @@ import javax.swing.event.ListSelectionListener;
 
 import model.Adherent;
 import model.Dao;
+import resources.Style;
 
+/**
+ * Onglet des adhérents 
+ * Permet d'afficher, ajouter, supprimer et modifier les adhérents 
+ * de la bibliothèque avec un tableau et des champs de texte  
+ */
 public class AdherentView extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-
+	
 	private JTable tableAdherents;
 	private DefaultTableModel tableModel;
 	private JTextField txtNom, txtPrenom, txtEmail, txtTelephone, txtAdresse;
 	private JButton btnAjouter, btnSupprimer, btnModifier;
+	private EmpruntView empruntView;
 	
+	/**
+	 * Constructeur de l'onglet des adhérents
+	 * Initialise l'onglet avec un tableau scrollable, 
+	 * une zone de champs de saisie et une zone de boutons 
+	 */
 	public AdherentView() {
 		setLayout(new BorderLayout());
 		
@@ -102,6 +114,19 @@ public class AdherentView extends JPanel {
 			}
 		});
 		
+		//Gestion du style
+		Style.stylePanel(inputsPanel);
+		Style.stylePanel(buttonsPanel);
+		Style.styleTable(tableAdherents);
+		Style.styleTextField(txtNom);
+		Style.styleTextField(txtPrenom);
+		Style.styleTextField(txtEmail);
+		Style.styleTextField(txtTelephone);
+		Style.styleTextField(txtAdresse);
+		Style.styleSuccessButton(btnAjouter);
+		Style.stylePrimaryButton(btnModifier);
+		Style.styleDangerButton(btnSupprimer);
+		
 		//Ecouteurs pour les boutons
 		//Ecouteur pour le bouton permettant d'ajouter un adherent
 		btnAjouter.addActionListener(new ActionListener() {
@@ -128,15 +153,22 @@ public class AdherentView extends JPanel {
 		});
 	}
 		
+	//setter sur empruntView
+	public void setEmpruntView(EmpruntView empruntView) { this.empruntView = empruntView; }
+
 	//Methodes
-	//Méthode pour charger la vue
+	/**
+	 * Charge les données des adhérents dans le tableau
+	 */
 	public void chargerVue() {
 		chargerAdherents();
 	}
 	
-	//Méthode qui permet de charger tous les adherents
+	/**
+	 * Charge tous les adhérents et les affiche dans le tableau
+	 */
 	private void chargerAdherents() {
-		tableModel.setRowCount(0);//vide le tableau
+		tableModel.setRowCount(0); //vide le tableau
 		try {
 			List<Adherent> adherents = Dao.getAllAdherents();
 			for (Adherent adherent : adherents) {
@@ -156,7 +188,9 @@ public class AdherentView extends JPanel {
 		}		
 	}
 	
-	//Méthode qui permet de vider tous les champs
+	/**
+	 * Vide tous les champs de texte
+	 */
 	private void viderChamps() {
 		txtNom.setText("");
         txtPrenom.setText("");
@@ -165,7 +199,9 @@ public class AdherentView extends JPanel {
         txtAdresse.setText("");
 	}
 	
-	//Méthode qui permet de remplir un adhérent
+	/**
+	 * Remplit les champs avec les données d'un adhérent
+	 */
 	private void fillFieldsFromSelectedRows() {
 		int selectedRow = tableAdherents.getSelectedRow();
 		try {
@@ -185,7 +221,9 @@ public class AdherentView extends JPanel {
 		}
 	}
 	
-	//Méthode qui permet d'ajouter un adherent
+	/**
+	 * Ajoute un adherent avec les données saisies dans les champs de texte
+	 */
 	private void ajouterAdherent() {
 		String nom = txtNom.getText();
 		String prenom = txtPrenom.getText();
@@ -203,12 +241,15 @@ public class AdherentView extends JPanel {
 			Dao.addAdherent(adherent);
 			chargerAdherents();
 			viderChamps();
+			empruntView.chargerComboAdherents();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout d'un adhérent : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
-	//Méthode qui permet de supprimer un adhérent
+	/**
+	 * Supprime l'adhérent sélectionné dans le tableau
+	 */
 	private void supprimerAdherent() {
 		int selectedRow = tableAdherents.getSelectedRow();
 		if(selectedRow == -1) {
@@ -222,6 +263,8 @@ public class AdherentView extends JPanel {
 			if (confirm == JOptionPane.YES_OPTION) {
             Dao.deleteAdherent(id);
 	            chargerAdherents();
+	            empruntView.chargerComboAdherents();
+	            empruntView.chargerEmprunts();
 	            viderChamps();
 	        }
 		} catch (Exception e) {
@@ -230,7 +273,9 @@ public class AdherentView extends JPanel {
 
 	}
 	
-	//Méthode qui permet de modifier un adhérent
+	/**
+	 * Modifie un adhérent par les données saisies dans les champs de texte
+	 */
 	private void modifierAdherent() {
 		int selectedRow = tableAdherents.getSelectedRow();
 		if(selectedRow == -1) {
@@ -251,10 +296,12 @@ public class AdherentView extends JPanel {
 		}
 		
 		try {
-			LocalDate dateInscription = Dao.getAdherentById(id).getDateInscription();
-			Adherent adherent = new Adherent(id, nom, prenom, email, telephone, adresse, dateInscription);
+			Adherent adherent = new Adherent(id, nom, prenom, email, telephone, adresse);
 			Dao.updateAdherent(adherent);
 			chargerAdherents();
+		    empruntView.chargerComboAdherents();
+	        empruntView.chargerEmprunts();
+	        viderChamps();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Erreur lors de la modification d'un adhérent : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}

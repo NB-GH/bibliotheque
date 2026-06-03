@@ -24,7 +24,7 @@ public class BibliothequeFrame extends JFrame {
 	 * Initialise l'interface graphique, les onglets 
 	 * et les liens entre les différentes vues
 	 */
-	public BibliothequeFrame() {
+	public BibliothequeFrame(String role) {
 		UIManager.put("OptionPane.background", Style.PANEL);
 		UIManager.put("Panel.background", Style.PANEL);
 		UIManager.put("OptionPane.messageForeground", Style.TEXT);

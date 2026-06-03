@@ -1,7 +1,8 @@
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
 import view.BibliothequeFrame;
+import view.LoginView;
 
 /**
  * Classe principale de l'application de gestion de bibliothèque
@@ -17,8 +18,17 @@ public class Main {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			try {
-				BibliothequeFrame frame = new BibliothequeFrame();
+				LoginView loginView = new LoginView(null);
+				loginView.setVisible(true);
+				String roleConnecte = loginView.getConnecte().getRole();
+				
+				if(roleConnecte == null) {
+					System.exit(0);
+				}
+
+				BibliothequeFrame frame = new BibliothequeFrame(roleConnecte);
 				frame.setVisible(true);
+				
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null,
 						"Erreur lors du démarrage : " + e.getMessage(),

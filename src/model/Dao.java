@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.security.MessageDigest;
 
 /**
  * Classe Dao permettant l'accès et la gestion
@@ -391,5 +392,35 @@ public class Dao {
             pstmtDelete.executeUpdate();            
 
 		}
+	}
+	
+	private static String hashPassword(String password) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			byte[] hash = md.digest(password.getBytes());
+			StringBuilder sb = new StringBuilder();
+			for (byte b : hash) sb.append(String.format("%02x", b));
+			return sb.toString();				
+		} catch (Exception e) {
+			throw new RuntimeException("Erreur de hachage", e);
+		}
+	}
+	
+	public static Utilisateur loginUtilisateur(Utilisateur utilisateur) throws SQLException {
+		String query = "SELECT * FROM utilisateurs WHERE login = ? AND password_hash = ?";
+		
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query)){
+			pstmt.setString(1, utilisateur.getLogin());
+			pstmt.setString(2, hashPassword(utilisateur.getPassword()));
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return Utilisateur.sansPassword(
+						rs.getString("login"), 
+						rs.getString("role")
+						);
+			}
+		}
+		return null;
 	}
 }

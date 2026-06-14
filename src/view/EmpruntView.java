@@ -35,7 +35,7 @@ public class EmpruntView extends JPanel {
 	private DefaultTableModel tableModel;
     private JComboBox<Livre> comboLivres;
     private JComboBox<Adherent> comboAdherents;
-    private JButton btnEmprunter, btnRetourner;
+    private JButton btnEmprunter, btnRetourner, btnSupprimer;
     private LivreView livreView;
     
     /**
@@ -47,7 +47,7 @@ public class EmpruntView extends JPanel {
 		setLayout(new BorderLayout());
 		
 		// Tableau des emprunts
-        String[] columns = {"ID", "Livre", "Adhérent", "Date d'emprunt", "Date de retour prévue"};
+        String[] columns = {"ID", "Livre", "Adhérent", "Date d'emprunt", "Date de retour prévue", "Date de retour réelle"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -68,8 +68,8 @@ public class EmpruntView extends JPanel {
 		
 		//Panel des listes déroulables
 		JPanel inputsPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints cLabelLivres = new GridBagConstraints();		
-		GridBagConstraints cComboLivres = new GridBagConstraints();		
+		GridBagConstraints cLabelLivres = new GridBagConstraints();
+		GridBagConstraints cComboLivres = new GridBagConstraints();
 		GridBagConstraints cLabelAdherents = new GridBagConstraints();		
 		GridBagConstraints cComboAdherents = new GridBagConstraints();
 		
@@ -84,6 +84,7 @@ public class EmpruntView extends JPanel {
 		cComboLivres.weightx = 1;
 		comboLivres = new JComboBox<>();
 		inputsPanel.add(comboLivres, cComboLivres);
+		Style.styleComboBox(comboLivres);
 		
 		cLabelAdherents.gridx = 0;
 		cLabelAdherents.gridy = 1;
@@ -102,9 +103,11 @@ public class EmpruntView extends JPanel {
 		JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		btnEmprunter = new JButton("Emprunter");
 		btnRetourner = new JButton("Retourner");
+		btnSupprimer = new JButton("Supprimer");
 		
 		buttonsPanel.add(btnEmprunter);
 		buttonsPanel.add(btnRetourner);
+		buttonsPanel.add(btnSupprimer);
 		
 		add(inputsPanel, BorderLayout.NORTH);
 		add(buttonsPanel, BorderLayout.SOUTH);
@@ -113,10 +116,10 @@ public class EmpruntView extends JPanel {
 		Style.stylePanel(inputsPanel);
 		Style.stylePanel(buttonsPanel);
 		Style.styleTable(tableEmprunts);
-		Style.styleComboBox(comboLivres);
 		Style.styleComboBox(comboAdherents);
 		Style.styleSuccessButton(btnEmprunter);
 		Style.stylePrimaryButton(btnRetourner);
+		Style.styleDangerButton(btnSupprimer);
 		
 		//Ecouteurs pour les boutons
 		//Ecouteur pour le bouton permettant d'emprunter un livre
@@ -132,6 +135,14 @@ public class EmpruntView extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 					retournerLivre();
+			}
+		});
+		
+		//Ecouteur pour le bouton permettant de supprimer un emprunt
+		btnSupprimer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				supprimerEmprunt();
 			}
 		});
 	}
@@ -196,7 +207,8 @@ public class EmpruntView extends JPanel {
 		            emprunt.getLivre().getTitre(),
 		            emprunt.getAdherent().getNom() + " " + emprunt.getAdherent().getPrenom(),
 		            emprunt.getDateEmprunt(),
-		            emprunt.getDateRetourPrevue()
+		            emprunt.getDateRetourPrevue(),
+		            (emprunt.getDateRetourReelle() != null) ? emprunt.getDateRetourReelle() : null 
 		        };
 		        tableModel.addRow(row);
 		    }
@@ -216,7 +228,7 @@ public class EmpruntView extends JPanel {
 			return;
 		}
 		try {
-			Emprunt emprunt = new Emprunt(0, livre, adherent, LocalDate.now(), LocalDate.now().plusDays(14));
+			Emprunt emprunt = new Emprunt(livre, adherent, LocalDate.now(), LocalDate.now().plusDays(14));
 			Dao.addEmprunt(emprunt);
 			chargerEmprunts();
 			chargerComboLivres();
@@ -238,12 +250,46 @@ public class EmpruntView extends JPanel {
 		}
 		try {
 			int id = (int) tableEmprunts.getValueAt(selectedRow, 0);
-			Dao.returnEmprunt(id);
-			chargerEmprunts();
-			chargerComboLivres();
-			livreView.chargerVue();
+			if (tableEmprunts.getValueAt(selectedRow, 5) != null) {
+				JOptionPane.showMessageDialog(this, "Cet emprunt est déja retourné. \n Il ne peut être retourné à nouveau.", "Attention", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			int confirm = JOptionPane.showConfirmDialog(this, "Voulez-vous vraiment retourner cet emprunt ?", "Confirmation", JOptionPane.YES_NO_OPTION);
+			if (confirm == JOptionPane.YES_OPTION) {
+				Dao.returnEmprunt(id, LocalDate.now());
+				chargerEmprunts();
+				chargerComboLivres();
+				livreView.chargerVue();
+			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Erreur lors du retour d'un livre : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	
+	private void supprimerEmprunt() {
+		int selectedRow = tableEmprunts.getSelectedRow();
+		if (selectedRow == -1) {
+			JOptionPane.showMessageDialog(this, "Veuillez sélectionner un emprunt.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			return;	
+		}
+		
+		try {
+			if (tableEmprunts.getValueAt(selectedRow, 5) == null) {
+				JOptionPane.showMessageDialog(this, "Cet emprunt est actuellement en cours. \n Il ne peut être supprimé.", "Attention", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			
+			int confirm = JOptionPane.showConfirmDialog(this, "Voulez-vous vraiment supprimer cet emprunt ?", "Confirmation", JOptionPane.YES_NO_OPTION);
+			if (confirm == JOptionPane.YES_OPTION) {
+				int id = (int) tableEmprunts.getValueAt(selectedRow, 0);
+				Dao.deleteEmprunt(id);
+				chargerEmprunts();
+				chargerComboLivres();
+				livreView.chargerVue();
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Erreur lors de la suppression d'un emprunt : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

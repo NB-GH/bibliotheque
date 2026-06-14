@@ -1,10 +1,11 @@
 package model;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Connection;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -249,6 +250,7 @@ public class Dao {
 				e.emprunt_id,
 	            e.date_emprunt,
 	            e.date_retour_prevue,
+	            e.date_retour_reelle,
 	            l.livre_id, l.titre, l.auteur, l.isbn, l.disponible, l.categorie, l.date_ajout,
 	            a.adherent_id, a.nom, a.prenom, a.email, a.telephone, a.adresse, a.date_inscription
 	        FROM emprunts e
@@ -284,7 +286,8 @@ public class Dao {
 					livre,
 					adherent,
 					rs.getDate("date_emprunt").toLocalDate(),
-					rs.getDate("date_retour_prevue").toLocalDate()
+					rs.getDate("date_retour_prevue").toLocalDate(),
+					(rs.getDate("date_retour_reelle") != null) ? rs.getDate("date_retour_reelle").toLocalDate() : null
 				);
 				emprunts.add(emprunt);
 			}
@@ -293,6 +296,8 @@ public class Dao {
 	}
 
 //	// Méthode pour voir un seul emprunt
+//	//Contient une erreur dans le jeu rs en creant des livre, adherent
+//	//en milieu de parcours
 //	public static Emprunt getEmpruntById(int empruntId) throws SQLException {
 //		String query = "SELECT * FROM emprunts WHERE emprunt_id = ?";
 //		try (Connection conn = DatabaseConnection.getConnection();
@@ -303,11 +308,12 @@ public class Dao {
 //				Livre livre = Dao.getLivreById(rs.getInt("livre_id"));
 //				Adherent adherent = Dao.getAdherentById(rs.getInt("adherent_id"));
 //				return new Emprunt(
-//						rs.getInt("emprunt_id"), 
-//						livre, 
-//						adherent, 
+//						rs.getInt("emprunt_id"),
+//						livre,
+//						adherent,
 //						rs.getDate("date_emprunt").toLocalDate(), 
-//						rs.getDate("date_retour_prevue").toLocalDate()
+//						rs.getDate("date_retour_prevue").toLocalDate(),
+//						(rs.getDate("date_retour_reelle") != null) ? rs.getDate("date_retour_reelle").toLocalDate() : null  
 //				);
 //			}
 //		}
@@ -376,7 +382,25 @@ public class Dao {
 	 * @param empruntId identifiant de l'emprunt qu'on souhaite retourner
 	 * @throws SQLException erreur lors du retour d'un emprunt
 	 */
-	public static void returnEmprunt(int empruntId) throws SQLException {
+	public static void returnEmprunt(int empruntId, LocalDate dateRetourReelle) throws SQLException {
+		String query = "UPDATE livres l JOIN emprunts e ON l.livre_id = e.livre_id SET l.disponible = TRUE, e.date_retour_reelle = ? WHERE e.emprunt_id = ?";
+		
+		try (Connection conn = DatabaseConnection.getConnection();
+	            PreparedStatement pstmt = conn.prepareStatement(query)){
+			
+			pstmt.setDate(1, java.sql.Date.valueOf(dateRetourReelle));
+			pstmt.setInt(2, empruntId); 
+            pstmt.executeUpdate();            
+		}
+	}
+	
+
+	/**
+	 * Supprime un emprunt de la bibliothèque
+	 * @param empruntId identifiant de l'emprunt qu'on souhaite supprimer
+	 * @throws SQLException erreur lors de la suppression d'un emprunt
+	 */
+	public static void deleteEmprunt(int empruntId) throws SQLException {
 		String queryUpdate = "UPDATE livres l JOIN emprunts e ON l.livre_id = e.livre_id SET l.disponible = TRUE WHERE e.emprunt_id = ?";
 		String queryDelete = "DELETE FROM emprunts WHERE emprunt_id = ?";
 		
@@ -388,8 +412,9 @@ public class Dao {
 			pstmtUpdate.executeUpdate(); 
 
 			pstmtDelete.setInt(1, empruntId);
-            pstmtDelete.executeUpdate();            
-
-		}
+            pstmtDelete.executeUpdate();
+            
+        }
 	}
 }
+

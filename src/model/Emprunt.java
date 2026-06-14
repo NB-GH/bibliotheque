@@ -11,7 +11,7 @@ public class Emprunt {
 	private Adherent adherent;
 	private LocalDate dateEmprunt;
 	private LocalDate dateRetourPrevue;
-	//private LocalDate dateRetourReelle;
+	private LocalDate dateRetourReelle;
 
 	/**
 	 * Constructeur complet pour créer un objet Emprunt
@@ -21,13 +21,13 @@ public class Emprunt {
 	 * @param dateEmprunt date de l'emprunt
 	 * @param dateRetourPrevue date de retour prévue de l'emprunt
 	 */
-	public Emprunt(int empruntId, Livre livre, Adherent adherent, LocalDate dateEmprunt, LocalDate dateRetourPrevue) {
+	public Emprunt(int empruntId, Livre livre, Adherent adherent, LocalDate dateEmprunt, LocalDate dateRetourPrevue, LocalDate dateRetourReelle) {
 		this.empruntId = empruntId;
 		this.livre = livre;
 		this.adherent = adherent;
 		this.dateEmprunt = dateEmprunt;
 		this.dateRetourPrevue = dateRetourPrevue;
-		//this.dateRetourReelle = dateRetourReelle;
+		this.dateRetourReelle = dateRetourReelle;
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class Emprunt {
 	 * @param dateRetourPrevue date de retour prévue de l'emprunt
 	 */
 	public Emprunt(Livre livre, Adherent adherent, LocalDate dateEmprunt, LocalDate dateRetourPrevue) {
-		this(0, livre, adherent, dateEmprunt, dateRetourPrevue);
+		this(0, livre, adherent, dateEmprunt, dateRetourPrevue, null);
 	}
 
 	//getters
@@ -47,7 +47,7 @@ public class Emprunt {
 	public Adherent getAdherent() { return adherent; }
 	public LocalDate getDateEmprunt() { return dateEmprunt; }
 	public LocalDate getDateRetourPrevue() { return dateRetourPrevue; }
-	//public LocalDate getDateRetourReelle() { return dateRetourReelle; }
+	public LocalDate getDateRetourReelle() { return dateRetourReelle; }
 	
 	//setters
 	public void setEmpruntId(int empruntId) { this.empruntId = empruntId; }
@@ -55,13 +55,13 @@ public class Emprunt {
 	public void setAdherent(Adherent adherent) { this.adherent = adherent; }
 	public void setDateEmprunt(LocalDate dateEmprunt) { this.dateEmprunt = dateEmprunt; }
 	public void setDateRetourPrevue(LocalDate dateRetourPrevue) { this.dateRetourPrevue = dateRetourPrevue; }
-	//public void setDateRetourReelle(LocalDate dateRetourReelle) { this.dateRetourReelle = dateRetourReelle; }
+	public void setDateRetourReelle(LocalDate dateRetourReelle) { this.dateRetourReelle = dateRetourReelle; }
 	
 	/**
 	 * Retourne une représentation textuelle de l'emprunt
 	 */
 	@Override
     public String toString() {
-        return "Emprunt [ID : " + empruntId + ", Livre : " + livre.getTitre() + ", Adhérent : " + adherent.getNom() + " " + adherent.getPrenom() + ", Date d'emprunt : " + dateEmprunt + ", Date de retour prévue : " + dateRetourPrevue + "]";
+        return "Emprunt [ID : " + empruntId + ", Livre : " + livre.getTitre() + ", Adhérent : " + adherent.getNom() + " " + adherent.getPrenom() + ", Date d'emprunt : " + dateEmprunt + ", Date de retour prévue : " + dateRetourPrevue + "Date de retour réelle : " + dateRetourReelle + "]";
     }
 }

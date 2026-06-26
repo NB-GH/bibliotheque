@@ -392,4 +392,39 @@ public class Dao {
 
 		}
 	}
+	
+	public static void addAvis(Avis avis) throws SQLException {
+		String query = "INSERT INTO avis (avis_texte, avis_date, livre_id, adherent_id) VALUES (?,?,?,?)";
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+			pstmt.setString(1, avis.getTexte());
+			pstmt.setDate(2, java.sql.Date.valueOf(avis.getDateAvis()));
+			pstmt.setInt(3, avis.getLivre().getLivreId());
+			pstmt.setInt(4, avis.getAdherent().getAdherentId());
+			pstmt.executeUpdate();
+
+			// Récupération de l'ID généré
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if (rs.next()) {
+				avis.setAvisId(rs.getInt(1));
+			}
+		}
+	}
+
+//	public static Avis getAllAvis(adherentId) throws SQLException {
+//		String query = "SELECT * FROM avis";
+//		try (Connection conn = DatabaseConnection.getConnection();
+//				PreparedStatement pstmt = conn.prepareStatement(query)) {
+//			ResultSet rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				return new Avis(rs.getInt("avis_id"), 
+//						getLivreById(rs.getInt("livre_id")),
+//						getAdherentById(rs.getInt("adherent_id")),
+//						rs.getString("avis_texte"), 
+//						rs.getDate("avis_date").toLocalDate(),
+//				);
+//			}
+//		}
+//		return null;
+//	}
 }

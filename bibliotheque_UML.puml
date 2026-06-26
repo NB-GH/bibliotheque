@@ -1,0 +1,47 @@
+@startuml
+
+package view {
+    class BibliothequeFrame
+    class EmpruntView
+    class AdherentView
+    class LivreView
+}
+
+package model {
+    class Dao
+    class DatabaseConnection
+    class Livre
+    class Adherent
+    class Emprunt
+}
+
+package resources {
+    class Style
+}
+
+'======================
+' Relations UI
+'======================
+BibliothequeFrame --> LivreView
+BibliothequeFrame --> AdherentView
+BibliothequeFrame --> EmpruntView
+
+EmpruntView --> LivreView
+AdherentView --> EmpruntView
+LivreView --> EmpruntView
+
+'======================
+' Accès données
+'======================
+Dao --> DatabaseConnection
+Dao --> Livre
+Dao --> Adherent
+Dao --> Emprunt
+
+'======================
+' Modèle relations métier
+'======================
+Emprunt --> Livre
+Emprunt --> Adherent
+
+@enduml

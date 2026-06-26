@@ -18,7 +18,7 @@ public class BibliothequeFrame extends JFrame {
 	private LivreView livrePanel;
 	private AdherentView adherentPanel;
 	private EmpruntView empruntPanel;
-	
+	private AvisView avisPanel;
 	/**
 	 * Constructeur de la fenêtre principale
 	 * Initialise l'interface graphique, les onglets 
@@ -45,6 +45,7 @@ public class BibliothequeFrame extends JFrame {
 		livrePanel = new LivreView();
 		adherentPanel = new AdherentView();
 		empruntPanel = new EmpruntView();
+		avisPanel = new AvisView();
 		
 		livrePanel.setEmpruntView(empruntPanel);
 		adherentPanel.setEmpruntView(empruntPanel);
@@ -53,13 +54,15 @@ public class BibliothequeFrame extends JFrame {
 		tabbedPane.addTab("Livres", livrePanel);
         tabbedPane.addTab("Adhérents", adherentPanel);
         tabbedPane.addTab("Emprunts", empruntPanel);
-
+        tabbedPane.addTab("Avis", avisPanel);
+        
         add(tabbedPane, BorderLayout.CENTER);
         
         if (!java.beans.Beans.isDesignTime()) {
             livrePanel.chargerVue();
             adherentPanel.chargerVue();
             empruntPanel.chargerVue();
+            avisPanel.chargerVue();
         }
     }
 }

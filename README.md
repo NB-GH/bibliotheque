@@ -31,6 +31,13 @@ capturées dans des throws SQLException.
 View contient les interfaces graphiques développées avec la bibliothèque Swing.
 Cette architecture permet de séparer la logique métier, l’accès aux données et l’interface utilisateur.
 
+# Branches du dépôt
+
+La branche **master** est la branche principale du dépôt.
+La branche **auth** prend en compte une authentification et permet de filtrer les fonctionnalité selon son rôle dans la bibliothèque.
+La branche **retour** gère les dates de retour des livres et affiche les emprunts retournées. 
+La branche **examen** permet la saisie d'un avis sur un livre par un lecteur l'ayant emprunté.
+ 
 # Lancement du projet (en local)
 
 ## Prérequis à installer

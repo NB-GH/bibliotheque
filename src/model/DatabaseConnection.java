@@ -11,11 +11,12 @@ public class DatabaseConnection {
 	private static final String URL = "jdbc:mysql://localhost/bibliotheque";
 	private static final String USER = "root";
 	private static final String PASSWORD = "";
-	
+
 	private static Connection connection = null;
-	
+
 	/**
 	 * Retourne une connexion active à la base de données
+	 * 
 	 * @return connexion à la base de données
 	 * @throws SQLException erreur lors de la connexion
 	 */
@@ -30,9 +31,10 @@ public class DatabaseConnection {
 		}
 		return connection;
 	};
-	
+
 	/**
 	 * Ferme la connexion à la base de données
+	 * 
 	 * @throws SQLException erreur lors de la fermeture
 	 */
 	public static void closeConnection() throws SQLException {

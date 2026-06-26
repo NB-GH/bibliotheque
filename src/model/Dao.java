@@ -10,14 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe Dao permettant l'accès et la gestion
- * des données de la bibliothèque dans la base de données
+ * Classe Dao permettant l'accès et la gestion des données de la bibliothèque
+ * dans la base de données
  */
 public class Dao {
 
 	// Méthodes pour gérer les livres
 	/**
 	 * Récupère la liste de tous les livres de la bibliothèque
+	 * 
 	 * @return liste des livres
 	 * @throws SQLException erreur lors de la récuperation des livres
 	 */
@@ -28,15 +29,9 @@ public class Dao {
 				PreparedStatement pstmt = conn.prepareStatement(query);
 				ResultSet rs = pstmt.executeQuery()) {
 			while (rs.next()) {
-				livres.add(new Livre(
-						rs.getInt("livre_id"), 
-						rs.getString("titre"), 
-						rs.getString("auteur"),
-						rs.getString("isbn"), 
-						rs.getBoolean("disponible"), 
-						rs.getString("categorie"), 
-						rs.getDate("date_ajout").toLocalDate()
-				));
+				livres.add(new Livre(rs.getInt("livre_id"), rs.getString("titre"), rs.getString("auteur"),
+						rs.getString("isbn"), rs.getBoolean("disponible"), rs.getString("categorie"),
+						rs.getDate("date_ajout").toLocalDate()));
 			}
 		}
 		return livres;
@@ -44,6 +39,7 @@ public class Dao {
 
 	/**
 	 * Récupère un livre de la bibliothèque à partir de son identifiant
+	 * 
 	 * @param livreId identifiant du livre
 	 * @return livre qui nous interesse
 	 * @throws SQLException erreur lors de la récuperation du livre
@@ -51,18 +47,13 @@ public class Dao {
 	public static Livre getLivreById(int livreId) throws SQLException {
 		String query = "SELECT * FROM livres WHERE livre_id = ?";
 		try (Connection conn = DatabaseConnection.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(query)){
-				pstmt.setInt(1, livreId);
-				ResultSet rs = pstmt.executeQuery();
+				PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, livreId);
+			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return new Livre(rs.getInt("livre_id"), 
-						rs.getString("titre"), 
-						rs.getString("auteur"),
-						rs.getString("isbn"), 
-						rs.getBoolean("disponible"), 
-						rs.getString("categorie"), 
-						rs.getDate("date_ajout").toLocalDate()
-				);
+				return new Livre(rs.getInt("livre_id"), rs.getString("titre"), rs.getString("auteur"),
+						rs.getString("isbn"), rs.getBoolean("disponible"), rs.getString("categorie"),
+						rs.getDate("date_ajout").toLocalDate());
 			}
 		}
 		return null;
@@ -70,6 +61,7 @@ public class Dao {
 
 	/**
 	 * Ajoute un livre dans la bibliothèque
+	 * 
 	 * @param livre livre qu'on souhaite ajouter
 	 * @throws SQLException erreur lors de l'ajout d'un livre
 	 */
@@ -95,6 +87,7 @@ public class Dao {
 
 	/**
 	 * Supprime un livre de la bibliothèque
+	 * 
 	 * @param livreId identifiant du livre qu'on souhaite supprimer
 	 * @throws SQLException erreur lors de la suppression d'un livre
 	 */
@@ -109,6 +102,7 @@ public class Dao {
 
 	/**
 	 * Modifie un livre de la bibliothèque
+	 * 
 	 * @param livre livre qu'on souhaite modifier
 	 * @throws SQLException erreur lors de la modification d'un livre
 	 */
@@ -129,6 +123,7 @@ public class Dao {
 	// Méthodes pour gérer les adhérents
 	/**
 	 * Récupère la liste de tous les adhérents de la bibliothèque
+	 * 
 	 * @return liste des adhérents
 	 * @throws SQLException erreur lors de la récuperation des adhérents
 	 */
@@ -139,15 +134,9 @@ public class Dao {
 				PreparedStatement pstmt = conn.prepareStatement(query);
 				ResultSet rs = pstmt.executeQuery()) {
 			while (rs.next()) {
-				adherents.add(new Adherent(
-						rs.getInt("adherent_id"), 
-						rs.getString("nom"), 
-						rs.getString("prenom"),
-						rs.getString("email"), 
-						rs.getString("telephone"), 
-						rs.getString("adresse"),
-						rs.getDate("date_inscription").toLocalDate()
-				));
+				adherents.add(new Adherent(rs.getInt("adherent_id"), rs.getString("nom"), rs.getString("prenom"),
+						rs.getString("email"), rs.getString("telephone"), rs.getString("adresse"),
+						rs.getDate("date_inscription").toLocalDate()));
 			}
 		}
 		return adherents;
@@ -155,6 +144,7 @@ public class Dao {
 
 	/**
 	 * Récupère un adhérent de la bibliothèque à partir de son identifiant
+	 * 
 	 * @param adherentId identifiant de l'adhérent
 	 * @return adherent qui nous interesse
 	 * @throws SQLException erreur lors de la récuperation d'un adhérent
@@ -166,14 +156,9 @@ public class Dao {
 			pstmt.setInt(1, adherentId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return new Adherent(rs.getInt("adherent_id"), 
-						rs.getString("nom"), 
-						rs.getString("prenom"),
-						rs.getString("email"), 
-						rs.getString("telephone"), 
-						rs.getString("adresse"),
-						rs.getDate("date_inscription").toLocalDate()
-				);
+				return new Adherent(rs.getInt("adherent_id"), rs.getString("nom"), rs.getString("prenom"),
+						rs.getString("email"), rs.getString("telephone"), rs.getString("adresse"),
+						rs.getDate("date_inscription").toLocalDate());
 			}
 		}
 		return null;
@@ -181,6 +166,7 @@ public class Dao {
 
 	/**
 	 * Ajoute un adherent dans la bibliothèque
+	 * 
 	 * @param adherent adherent qu'on souhaite ajouter
 	 * @throws SQLException erreur lors de l'ajout d'un adherent
 	 */
@@ -206,6 +192,7 @@ public class Dao {
 
 	/**
 	 * Supprime un adhérent de la bibliothèque
+	 * 
 	 * @param adherentId identifiant de l'adhérent qu'on souhaite supprimer
 	 * @throws SQLException erreur lors de la suppression d'un adhérent
 	 */
@@ -220,6 +207,7 @@ public class Dao {
 
 	/**
 	 * Modifie un adhérent de la bibliothèque
+	 * 
 	 * @param adherent adhérent qu'on souhaite modifier
 	 * @throws SQLException erreur lors de la modification d'un adhérent
 	 */
@@ -240,55 +228,40 @@ public class Dao {
 	// Méthodes pour administrer les emprunts
 	/**
 	 * Récupère la liste de tous les emprunts de la bibliothèque
+	 * 
 	 * @return liste des emprunts
 	 * @throws SQLException erreur lors de la récupération des emprunts
 	 */
 	public static List<Emprunt> getAllEmprunts() throws SQLException {
 		List<Emprunt> emprunts = new ArrayList<>();
-		String query ="""
-			SELECT
-				e.emprunt_id,
-	            e.date_emprunt,
-	            e.date_retour_prevue,
-	            e.date_retour_reelle,
-	            l.livre_id, l.titre, l.auteur, l.isbn, l.disponible, l.categorie, l.date_ajout,
-	            a.adherent_id, a.nom, a.prenom, a.email, a.telephone, a.adresse, a.date_inscription
-	        FROM emprunts e
-	        JOIN livres l ON e.livre_id = l.livre_id
-	        JOIN adherents a ON e.adherent_id = a.adherent_id
-	        """;
+		String query = """
+				SELECT
+					e.emprunt_id,
+				          e.date_emprunt,
+				          e.date_retour_prevue,
+				          e.date_retour_reelle,
+				          l.livre_id, l.titre, l.auteur, l.isbn, l.disponible, l.categorie, l.date_ajout,
+				          a.adherent_id, a.nom, a.prenom, a.email, a.telephone, a.adresse, a.date_inscription
+				      FROM emprunts e
+				      JOIN livres l ON e.livre_id = l.livre_id
+				      JOIN adherents a ON e.adherent_id = a.adherent_id
+				      """;
 		try (Connection conn = DatabaseConnection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(query);
 				ResultSet rs = pstmt.executeQuery()) {
 			while (rs.next()) {
-				Livre livre = new Livre(
-						rs.getInt("livre_id"), 
-						rs.getString("titre"), 
-						rs.getString("auteur"),
-						rs.getString("isbn"), 
-						rs.getBoolean("disponible"), 
-						rs.getString("categorie"), 
-						rs.getDate("date_ajout").toLocalDate()
-				);
-	          	            
-				Adherent adherent = new Adherent(
-						rs.getInt("adherent_id"), 
-						rs.getString("nom"), 
-						rs.getString("prenom"),
-						rs.getString("email"), 
-						rs.getString("telephone"), 
-						rs.getString("adresse"),
-						rs.getDate("date_inscription").toLocalDate()
-				);
-				
-				Emprunt emprunt = new Emprunt(
-					rs.getInt("emprunt_id"),
-					livre,
-					adherent,
-					rs.getDate("date_emprunt").toLocalDate(),
-					rs.getDate("date_retour_prevue").toLocalDate(),
-					(rs.getDate("date_retour_reelle") != null) ? rs.getDate("date_retour_reelle").toLocalDate() : null
-				);
+				Livre livre = new Livre(rs.getInt("livre_id"), rs.getString("titre"), rs.getString("auteur"),
+						rs.getString("isbn"), rs.getBoolean("disponible"), rs.getString("categorie"),
+						rs.getDate("date_ajout").toLocalDate());
+
+				Adherent adherent = new Adherent(rs.getInt("adherent_id"), rs.getString("nom"), rs.getString("prenom"),
+						rs.getString("email"), rs.getString("telephone"), rs.getString("adresse"),
+						rs.getDate("date_inscription").toLocalDate());
+
+				Emprunt emprunt = new Emprunt(rs.getInt("emprunt_id"), livre, adherent,
+						rs.getDate("date_emprunt").toLocalDate(), rs.getDate("date_retour_prevue").toLocalDate(),
+						(rs.getDate("date_retour_reelle") != null) ? rs.getDate("date_retour_reelle").toLocalDate()
+								: null);
 				emprunts.add(emprunt);
 			}
 		}
@@ -322,20 +295,21 @@ public class Dao {
 
 	// Méthode pour voir si un livre est emprunté
 	/**
-	 * récupère l'identifiant d'un emprunt à partir 
-	 * du titre du livre si le livre est emprunté
+	 * récupère l'identifiant d'un emprunt à partir du titre du livre si le livre
+	 * est emprunté
+	 * 
 	 * @param titre titre du livre dont on souhaite savoir s'il est emprunté
 	 * @return identifiant de l'emprunt si le livre et emprunté, null sinon
-	 * @throws SQLException erreur lors de la récupération 
+	 * @throws SQLException erreur lors de la récupération
 	 */
 	public static Integer getEmpruntIdByLivreTitre(String titre) throws SQLException {
 		String query = """
-			SELECT 
-			e.emprunt_id 
-			FROM emprunts e 
-			JOIN livres l ON e.livre_id = l.livre_id 
-			WHERE l.titre = ? 
-			""";
+				SELECT
+				e.emprunt_id
+				FROM emprunts e
+				JOIN livres l ON e.livre_id = l.livre_id
+				WHERE l.titre = ?
+				""";
 		try (Connection conn = DatabaseConnection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(query)) {
 			pstmt.setString(1, titre);
@@ -349,23 +323,24 @@ public class Dao {
 
 	/**
 	 * Emprunte un livre de la bibliothèque
+	 * 
 	 * @param emprunt emprunt qu'on souhaite effectuer
 	 * @throws SQLException erreur lors de l'emprunt d'un livre
 	 */
 	public static void addEmprunt(Emprunt emprunt) throws SQLException {
 		String queryInsert = "INSERT INTO emprunts (livre_id, adherent_id, date_emprunt, date_retour_prevue) VALUES (?, ?, ?, ?)";
-		String queryUpdate = "UPDATE livres SET disponible = FALSE WHERE livre_id = ?"; 
+		String queryUpdate = "UPDATE livres SET disponible = FALSE WHERE livre_id = ?";
 
 		try (Connection conn = DatabaseConnection.getConnection();
 				PreparedStatement pstmtInsert = conn.prepareStatement(queryInsert, Statement.RETURN_GENERATED_KEYS);
 				PreparedStatement pstmtUpdate = conn.prepareStatement(queryUpdate)) {
-			
+
 			pstmtInsert.setInt(1, emprunt.getLivre().getLivreId());
 			pstmtInsert.setInt(2, emprunt.getAdherent().getAdherentId());
 			pstmtInsert.setDate(3, java.sql.Date.valueOf(emprunt.getDateEmprunt()));
 			pstmtInsert.setDate(4, java.sql.Date.valueOf(emprunt.getDateRetourPrevue()));
 			pstmtInsert.executeUpdate();
-			
+
 			pstmtUpdate.setInt(1, emprunt.getLivre().getLivreId());
 			pstmtUpdate.executeUpdate();
 
@@ -379,42 +354,42 @@ public class Dao {
 
 	/**
 	 * Retourne un emprunt d'un livre de la bibliothèque
+	 * 
 	 * @param empruntId identifiant de l'emprunt qu'on souhaite retourner
 	 * @throws SQLException erreur lors du retour d'un emprunt
 	 */
 	public static void returnEmprunt(int empruntId, LocalDate dateRetourReelle) throws SQLException {
 		String query = "UPDATE livres l JOIN emprunts e ON l.livre_id = e.livre_id SET l.disponible = TRUE, e.date_retour_reelle = ? WHERE e.emprunt_id = ?";
-		
+
 		try (Connection conn = DatabaseConnection.getConnection();
-	            PreparedStatement pstmt = conn.prepareStatement(query)){
-			
+				PreparedStatement pstmt = conn.prepareStatement(query)) {
+
 			pstmt.setDate(1, java.sql.Date.valueOf(dateRetourReelle));
-			pstmt.setInt(2, empruntId); 
-            pstmt.executeUpdate();            
+			pstmt.setInt(2, empruntId);
+			pstmt.executeUpdate();
 		}
 	}
-	
 
 	/**
 	 * Supprime un emprunt de la bibliothèque
+	 * 
 	 * @param empruntId identifiant de l'emprunt qu'on souhaite supprimer
 	 * @throws SQLException erreur lors de la suppression d'un emprunt
 	 */
 	public static void deleteEmprunt(int empruntId) throws SQLException {
 		String queryUpdate = "UPDATE livres l JOIN emprunts e ON l.livre_id = e.livre_id SET l.disponible = TRUE WHERE e.emprunt_id = ?";
 		String queryDelete = "DELETE FROM emprunts WHERE emprunt_id = ?";
-		
+
 		try (Connection conn = DatabaseConnection.getConnection();
-				PreparedStatement pstmtUpdate = conn.prepareStatement(queryUpdate); 
-	            PreparedStatement pstmtDelete = conn.prepareStatement(queryDelete)){
-			
+				PreparedStatement pstmtUpdate = conn.prepareStatement(queryUpdate);
+				PreparedStatement pstmtDelete = conn.prepareStatement(queryDelete)) {
+
 			pstmtUpdate.setInt(1, empruntId);
-			pstmtUpdate.executeUpdate(); 
+			pstmtUpdate.executeUpdate();
 
 			pstmtDelete.setInt(1, empruntId);
-            pstmtDelete.executeUpdate();
-            
-        }
+			pstmtDelete.executeUpdate();
+
+		}
 	}
 }
-

@@ -31,7 +31,7 @@ public class Style {
 	public static final Color TEXT = new Color(44, 62, 80);
 	public static final Color BORDER = new Color(220, 223, 230);
 	public static final Color TABLE_SELECTION = new Color(214, 234, 248);
-	
+
 	/**
 	 * Polices de l'interface
 	 */
@@ -42,34 +42,33 @@ public class Style {
 	/**
 	 * Bordures de l'interface
 	 */
-	public static final Border INPUT_BORDER = BorderFactory.createCompoundBorder(
-		BorderFactory.createLineBorder(BORDER),
-		BorderFactory.createEmptyBorder(3,8,3,8)
-	);
+	public static final Border INPUT_BORDER = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(BORDER),
+			BorderFactory.createEmptyBorder(3, 8, 3, 8));
 	public static final Border BUTTON_BORDER = BorderFactory.createEmptyBorder(10, 18, 10, 18);
-	
+
 	/**
 	 * Applique un style personnalisé à un panneau
+	 * 
 	 * @param panel panneau qu'on souhaite personnaliser
 	 */
 	public static void stylePanel(JPanel panel) {
 		panel.setBackground(PANEL);
-		panel.setBorder(
-			BorderFactory.createEmptyBorder(10, 10, 10, 10)
-		);
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 	}
 
 	/**
 	 * Applique un style personnalisé à un label
+	 * 
 	 * @param label label qu'on souhaite personnaliser
 	 */
 	public static void styleLabel(JLabel label) {
 		label.setFont(FONT);
 		label.setForeground(TEXT);
 	}
-	
+
 	/**
 	 * Applique un style personnalisé à un bouton
+	 * 
 	 * @param btn bouton qu'on souhaite personnaliser
 	 */
 	public static void stylePrimaryButton(JButton btn) {
@@ -79,6 +78,7 @@ public class Style {
 		btn.setFocusPainted(false);
 		btn.setBorder(BUTTON_BORDER);
 	}
+
 	public static void styleDangerButton(JButton btn) {
 		btn.setBackground(DANGER);
 		btn.setForeground(Color.WHITE);
@@ -86,6 +86,7 @@ public class Style {
 		btn.setFocusPainted(false);
 		btn.setBorder(BUTTON_BORDER);
 	}
+
 	public static void styleSuccessButton(JButton btn) {
 		btn.setBackground(SUCCESS);
 		btn.setForeground(Color.WHITE);
@@ -96,17 +97,19 @@ public class Style {
 
 	/**
 	 * Applique un style personnalisé à une case à cocher
-	 * @param chk case à cocher qu'on souhaite personnaliser 
+	 * 
+	 * @param chk case à cocher qu'on souhaite personnaliser
 	 */
 	public static void styleCheckBox(JCheckBox chk) {
 		chk.setFont(FONT);
 		chk.setBackground(PANEL);
 		chk.setForeground(TEXT);
-		
+
 	}
-	
+
 	/**
 	 * Applique un style personnalisé à un champ texte
+	 * 
 	 * @param txt champ texte qu'on souhaite personnaliser
 	 */
 	public static void styleTextField(JTextField txt) {
@@ -118,6 +121,7 @@ public class Style {
 
 	/**
 	 * applique un style personnalisé à une liste déroulante
+	 * 
 	 * @param combo liste déroulante qu'on souhaite personnaliser
 	 */
 	public static void styleComboBox(JComboBox<?> combo) {
@@ -126,9 +130,10 @@ public class Style {
 		combo.setForeground(TEXT);
 		combo.setBorder(INPUT_BORDER);
 	}
-	
+
 	/**
 	 * Applique un style personnalisé à un tableau
+	 * 
 	 * @param table tableau qu'on souhaite personnaliser
 	 */
 	public static void styleTable(JTable table) {
@@ -142,9 +147,10 @@ public class Style {
 		table.getTableHeader().setBackground(PRIMARY);
 		table.getTableHeader().setForeground(Color.WHITE);
 	}
-	
+
 	/**
 	 * Applique un style personnalisé à un panneau d'onglets
+	 * 
 	 * @param tabb panneau qu'on souhaite personnaliser
 	 */
 	public static void styleTabbedPane(JTabbedPane tabb) {
@@ -152,9 +158,10 @@ public class Style {
 		tabb.setBackground(PANEL);
 		tabb.setForeground(TEXT);
 	}
-	
+
 	/**
 	 * Applique le style global à un composant Swing
+	 * 
 	 * @param component composant qu'on souhaite styliser
 	 */
 	public static void styleComponent(JComponent component) {
